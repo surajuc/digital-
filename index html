@@ -1,0 +1,399 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Grow — Social Services</title>
+<style>
+:root {
+  --bg:#081126; --panel:#101d3b; --line:#263e72;
+  --blue:#287bff; --purple:#9c4dff; --cyan:#15d7ed;
+  --text:#f5f7ff; --muted:#a9b8d9;
+}
+* { box-sizing:border-box }
+body {
+  margin:0;
+  background:radial-gradient(circle at 15% 0%,#182b5b 0,transparent 32%),var(--bg);
+  color:var(--text);
+  font-family:Arial,system-ui,sans-serif;
+}
+button,input,select { font:inherit }
+button { cursor:pointer; border:0 }
+.wrap { max-width:1150px; margin:auto; padding:18px }
+.top {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; padding:12px 0 22px;
+}
+.brand { display:flex; align-items:center; gap:12px; font-size:28px; font-weight:900 }
+.logo {
+  display:grid; place-items:center; width:48px; height:48px;
+  border-radius:15px; background:linear-gradient(135deg,var(--purple),var(--blue),var(--cyan));
+  font-size:25px;
+}
+.brand span {
+  background:linear-gradient(90deg,#fff,#a9a1ff,#36d9ff);
+  color:transparent; background-clip:text;
+}
+.btn {
+  border-radius:12px; padding:12px 16px; font-weight:750;
+  color:white; background:linear-gradient(100deg,#6b35ed,#247cff);
+}
+.secondary { background:#142449; border:1px solid #35548f }
+.top-actions,.hero-actions { display:flex; gap:9px; flex-wrap:wrap }
+.hero {
+  border:1px solid #284783; border-radius:26px; padding:28px;
+  background:linear-gradient(120deg,#111d3d,#0d1731 70%);
+  display:grid; grid-template-columns:1.4fr .8fr; gap:20px;
+}
+.eyebrow {
+  display:inline-block; border:1px solid #30538c; background:#14274c;
+  color:#b8d8ff; padding:7px 11px; border-radius:99px;
+  font-size:12px; font-weight:800;
+}
+.hero h1 { font-size:clamp(34px,6vw,58px); line-height:1.02; margin:18px 0 12px }
+.gradient {
+  background:linear-gradient(90deg,#a45cff,#32c9ff);
+  background-clip:text; color:transparent;
+}
+p { line-height:1.6 }
+.muted,.note,small { color:var(--muted) }
+.hero-card,.panel {
+  border:1px solid #2d4e8b; border-radius:20px; padding:20px;
+  background:linear-gradient(150deg,#182a56,#0a1632);
+}
+.pill,.price-row,.total {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; border:1px solid #2b477c; border-radius:12px;
+  padding:12px; margin:8px 0; background:#0a1530;
+}
+.section-title { margin:28px 0 14px }
+.section-title h2 { margin-bottom:5px }
+.layout { display:grid; grid-template-columns:1.1fr .9fr; gap:16px }
+.services { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px }
+.service {
+  background:#0e1b38; border:1px solid #294576; border-radius:15px;
+  padding:15px; text-align:left; color:white;
+}
+.service.active,.price-row.selected { border-color:var(--cyan); background:#102747 }
+.service h3 { margin:8px 0 4px }
+.price-list { display:grid; gap:8px; margin-top:15px }
+.price-row { width:100%; color:#dbe6ff; margin:0; text-align:left }
+.price-row strong { color:white }
+.field { display:grid; gap:7px; margin:13px 0 }
+.field label { font-size:13px; color:#c5d4f2; font-weight:700 }
+.field input,.field select {
+  width:100%; border:1px solid #304b80; border-radius:12px;
+  background:#09152e; color:white; padding:13px;
+}
+.total { margin:14px 0; padding:15px }
+.total strong { font-size:25px; color:#56dcff }
+.full { width:100% }
+.note { font-size:12px; line-height:1.5 }
+.alert {
+  border:1px solid #7e6330; background:#332916; color:#ffe2a5;
+  padding:12px; border-radius:12px; font-size:13px; line-height:1.5;
+  margin-top:12px;
+}
+.features { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:20px 0 }
+.feature { padding:15px; border:1px solid #263f72; border-radius:14px; background:#101d3b }
+.feature b { display:block; margin:8px 0 4px }
+footer { padding:28px 0; text-align:center; color:#9eb0d3; font-size:13px }
+.modal {
+  position:fixed; inset:0; background:#020611d9; display:none;
+  align-items:center; justify-content:center; padding:16px; z-index:5;
+}
+.modal.show { display:flex }
+.modalbox {
+  width:min(100%,520px); max-height:90vh; overflow:auto;
+  background:#101d3b; border:1px solid #3c5c9b; border-radius:20px; padding:22px;
+}
+.modalhead { display:flex; justify-content:space-between; align-items:center }
+.x { background:#1b2e55; color:white; border-radius:9px; padding:7px 11px }
+.order-item { padding:12px; border:1px solid #294576; border-radius:12px; margin-top:10px }
+@media(max-width:800px) {
+  .hero,.layout { grid-template-columns:1fr }
+  .hero-card { display:none }
+  .features { grid-template-columns:repeat(2,1fr) }
+}
+@media(max-width:480px) {
+  .wrap { padding:12px }
+  .top { align-items:flex-start }
+  .top-actions { flex-direction:column }
+  .btn { padding:10px 12px }
+  .hero { padding:21px }
+  .panel { padding:15px }
+  .services { grid-template-columns:1fr 1fr }
+  .features { grid-template-columns:repeat(2,1fr) }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="brand">
+    <div class="logo">↗</div>
+    <div>
+      <span>Digital Grow</span>
+      <div style="font-size:10px;color:#9eb4dc;letter-spacing:2px">
+        GROW YOUR SOCIAL PRESENCE
+      </div>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button class="btn secondary" onclick="openModal('orders')">My Orders</button>
+    <button class="btn" onclick="openModal('account')">Login / Sign Up</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <span class="eyebrow">✦ SOCIAL MEDIA SERVICES</span>
+    <h1>Grow your presence.<br><span class="gradient">Your way.</span></h1>
+    <p class="muted">
+      Explore our service packages, select a quantity and prepare
+      your order in a few simple steps.
+    </p>
+    <div class="hero-actions">
+      <button class="btn" onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">Create an Order →</button>
+      <button class="btn secondary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">View Services</button>
+    </div>
+  </div>
+  <div class="hero-card">
+    <h3>✨ Simple ordering</h3>
+    <div class="pill">▶ Reel Views <small>From ₹4</small></div>
+    <div class="pill">♥ Likes <small>Choose quantity</small></div>
+    <div class="pill">◉ Story Views <small>Quick order form</small></div>
+    <div class="pill">➤ Shares <small>Order preview</small></div>
+  </div>
+</section>
+
+<div class="section-title" id="services">
+  <h2>Our Services</h2>
+  <p class="muted">Select a service to see packages.</p>
+</div>
+
+<div class="layout">
+  <section class="panel">
+    <div class="services" id="serviceCards"></div>
+    <div class="section-title">
+      <h2 id="priceHeading">Reel Views Packages</h2>
+      <p class="muted">Select one package.</p>
+    </div>
+    <div class="price-list" id="priceList"></div>
+  </section>
+
+  <section class="panel" id="order">
+    <span class="eyebrow">CREATE ORDER</span>
+    <h2>Order details</h2>
+    <p class="note">Select a package and enter the public content URL.</p>
+
+    <div class="field">
+      <label for="selectedService">Service</label>
+      <select id="selectedService" onchange="selectService(this.value)"></select>
+    </div>
+    <div class="field">
+      <label for="contentUrl">Instagram content URL</label>
+      <input id="contentUrl" type="url" placeholder="https://www.instagram.com/..." />
+    </div>
+    <div class="field">
+      <label for="customerEmail">Email (optional)</label>
+      <input id="customerEmail" type="email" placeholder="you@example.com" />
+    </div>
+
+    <div class="total">
+      <div><div class="note">Package</div><b id="chosenQty">1K</b></div>
+      <div style="text-align:right">
+        <div class="note">Estimated total</div>
+        <strong id="chosenPrice">₹4</strong>
+      </div>
+    </div>
+    <button class="btn full" onclick="createOrder()">Continue to Checkout →</button>
+    <div class="alert">
+      Demo only: real payments, customer accounts and service-provider
+      connections are not active. Never mark a payment as successful
+      without server-side verification.
+    </div>
+  </section>
+</div>
+
+<section class="features">
+  <div class="feature">🛡️<b>Security</b><small>Secure setup needed</small></div>
+  <div class="feature">⚡<b>Quick Ordering</b><small>Simple selection</small></div>
+  <div class="feature">📦<b>Order Preview</b><small>Demo tracking</small></div>
+  <div class="feature">💬<b>Support</b><small>@suraj._.nbn</small></div>
+</section>
+
+<footer>
+  © 2026 Digital Grow · Instagram: <b>@suraj._.nbn</b><br>
+  Front-end prototype only — no live payment system.
+</footer>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modalbox">
+    <div class="modalhead">
+      <h2 id="modalTitle">My Orders</h2>
+      <button class="x" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+const services = {
+  'Reel Views': {
+    icon:'▶', unit:'views',
+    prices:{'1K':4,'2K':8,'5K':18,'10K':30,'50K':80,'100K':110,'500K':500,'1M':900}
+  },
+  'Post Views': {
+    icon:'▧', unit:'views',
+    prices:{'1K':5,'2K':9,'5K':25,'10K':40,'20K':80,'50K':190,'100K':360,'500K':1700,'1M':3300}
+  },
+  'Story Views': {
+    icon:'◉', unit:'views',
+    prices:{'300':22,'500':35,'1K':70,'2K':120,'5K':300,'10K':580}
+  },
+  'Likes': {
+    icon:'♥', unit:'likes',
+    prices:{'100':5,'300':12,'500':17,'1K':35,'2K':60,'5K':140,'10K':280,'20K':550,'50K':1300,'100K':2500,'500K':11950,'1M':22950}
+  },
+  'Shares': {
+    icon:'➤', unit:'shares',
+    prices:{'1K':13,'2K':24,'5K':52,'10K':95,'20K':190,'50K':450,'100K':860,'500K':4150,'1M':7940}
+  }
+};
+
+let currentService = 'Reel Views';
+let currentQty = '1K';
+let orders = [];
+
+const $ = id => document.getElementById(id);
+const money = n => '₹' + Number(n).toLocaleString('en-IN');
+
+function renderCards() {
+  $('serviceCards').innerHTML = Object.entries(services).map(([name,s]) =>
+    `<button class="service ${name===currentService?'active':''}" onclick="selectService('${name}')">
+      <span>${s.icon}</span><h3>${name}</h3>
+      <small>${Object.keys(s.prices).length} packages available</small>
+    </button>`
+  ).join('');
+
+  $('selectedService').innerHTML = Object.keys(services).map(n =>
+    `<option ${n===currentService?'selected':''}>${n}</option>`
+  ).join('');
+}
+
+function selectService(name) {
+  currentService = name;
+  currentQty = Object.keys(services[name].prices)[0];
+  renderCards();
+  renderPrices();
+  updateTotal();
+}
+
+function renderPrices() {
+  const s = services[currentService];
+  $('priceHeading').textContent = currentService + ' Packages';
+  $('priceList').innerHTML = Object.entries(s.prices).map(([qty,price]) =>
+    `<button class="price-row ${qty===currentQty?'selected':''}" onclick="selectQty('${qty}')">
+      <span>${qty} ${s.unit}</span><strong>${money(price)}</strong>
+    </button>`
+  ).join('');
+}
+
+function selectQty(qty) {
+  currentQty = qty;
+  renderPrices();
+  updateTotal();
+}
+
+function updateTotal() {
+  $('chosenQty').textContent = currentQty;
+  $('chosenPrice').textContent = money(services[currentService].prices[currentQty]);
+  $('selectedService').value = currentService;
+}
+
+function createOrder() {
+  const url = $('contentUrl').value.trim();
+  if (!url) {
+    alert('Please enter your content URL.');
+    $('contentUrl').focus();
+    return;
+  }
+
+  try { new URL(url); }
+  catch(e) {
+    alert('Please enter a valid URL including https://');
+    return;
+  }
+
+  const order = {
+    id:'DG-' + Date.now().toString().slice(-7),
+    service:currentService,
+    qty:currentQty,
+    price:services[currentService].prices[currentQty],
+    url,
+    email:$('customerEmail').value.trim(),
+    status:'Demo — payment not connected',
+    date:new Date().toLocaleString()
+  };
+
+  orders.unshift(order);
+  openModal('checkout',order);
+}
+
+function openModal(which,data) {
+  $('modal').classList.add('show');
+
+  if (which === 'orders') {
+    $('modalTitle').textContent = 'My Orders';
+    $('modalContent').innerHTML = orders.length
+      ? orders.map(o => `<div class="order-item">
+          <b>${o.service} · ${o.qty}</b>
+          <div>${money(o.price)} · ${o.status}</div>
+          <small>${o.id} · ${o.date}</small>
+        </div>`).join('')
+      : '<p class="note">No demo orders yet. Create an order to see it here.</p>';
+
+  } else if (which === 'account') {
+    $('modalTitle').textContent = 'Customer Account';
+    $('modalContent').innerHTML = `
+      <div class="alert">Login is a preview only. Real authentication is not connected.</div>
+      <div class="field"><label>Email</label><input type="email" placeholder="you@example.com"></div>
+      <div class="field"><label>Password</label><input type="password" placeholder="Password"></div>
+      <button class="btn full" onclick="alert('Live login is not connected yet.')">Continue</button>`;
+
+  } else if (which === 'checkout') {
+    $('modalTitle').textContent = 'Review Order';
+    $('modalContent').innerHTML = `
+      <div class="order-item">
+        <small>Order ID</small><h3>${data.id}</h3>
+        <b>${data.service} · ${data.qty}</b>
+        <p class="note">Content URL: ${data.url}</p>
+        <div class="total"><span>Total</span><strong>${money(data.price)}</strong></div>
+      </div>
+      <div class="alert">
+        Payment is not active in this demo. Do not send money to an
+        unverified QR code or payment link. A live checkout needs
+        secure server-side payment verification.
+      </div>
+      <button class="btn secondary full" style="margin-top:12px" onclick="closeModal()">Back to website</button>`;
+  }
+}
+
+function closeModal() {
+  $('modal').classList.remove('show');
+}
+
+$('modal').addEventListener('click',e => {
+  if (e.target === $('modal')) closeModal();
+});
+
+renderCards();
+renderPrices();
+updateTotal();
+</script>
+</body>
+</html>
